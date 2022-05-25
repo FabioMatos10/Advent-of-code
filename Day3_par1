@@ -1,0 +1,71 @@
+package day3__;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+
+public class Day3__ {
+
+    public static void main(String[] args) throws FileNotFoundException {
+        //Indicar o caminho do ficheiro
+        File file= new File("C:/Users/PTC_AppDev_Trainee/Downloads/inputs/day3_ficheiro.txt");
+       //Este Scanner serve para ler o conteudo do ficheiro
+            Scanner scann= new Scanner(file);
+         
+            //Cria um array do tipo string  para guardar os dados do ficheiro
+           //Cria dois arrays do tipo integer um para guardar os bits mais provaveis de sair e os menos provaveis de sair
+            String[] inst= new String[1000];
+            int[] bin = new int[12];
+            int[] bin_neg = new int[12];
+            //Cria duas variaveis para os ciclos
+            int i= 0;
+            int b;
+           
+      //Este ciclo while serve para inserir os dados do ficheiro na sua posição correspondente ao percorre-lo até o fim
+      while (scann.hasNextLine()){
+               
+                inst[i]= scann.nextLine();
+                i+=1;
+            }
+
+      //O ciclo for que se segue serve para percorrer o array que contám os dados do ficheiro
+      //
+       for (i = 0; i < 1000; i++){
+           
+            for (b = 0; b < 12; b++){
+                char[] chars = inst[i].toCharArray();
+               char c = chars[b];            
+                  if(Character.getNumericValue(c)==1){
+                      bin[b] +=1;
+                  }else{
+                      bin[b] -=1;
+                  }
+               }              
+       }
+     //criar dois variaveis do tipo string e uma variavel chamada"total " para saber o resultado final
+   
+     String numero1="";
+     String numero2="";
+     int total ;
+       //este ciclo for server para guardar as posições dos 1 e 0
+     for(b = 0; b < 12; b++){
+         if(bin[b]>=1){
+            bin[b]=1;
+            bin_neg[b]=0;
+         }else{
+            bin[b]=0;
+            bin_neg[b]=1;
+         }
+         
+         numero1 += bin[b];
+         numero2 += bin_neg[b];
+         
+     }
+     //Converte de binarios para decimal e dps mutiplicar os repectivos valores
+     //Apresenta o resultado
+     total=Integer.parseInt(numero1,2)*Integer.parseInt(numero2,2);
+     System.out.print(total);
+
+    }
+}
