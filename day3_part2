@@ -1,0 +1,90 @@
+package com.mycompany.dayb;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Dayb {
+
+    public static String getValue(List<String> novos_dados, String selecionar_criterios, boolean manter) {
+        int coluna = 0;
+        //vamos contar os valores positivos e negativos para cada linha de cada coluna 
+        //Vemos se o numero e positivo  
+        while (novos_dados.size() > 1) {
+            int positivo = 0;
+            int negativo = 0;
+              
+            for (String line : novos_dados) {
+                String[] lineArr = line.split("");
+                String s = lineArr[coluna];
+                if (s.equals("1")) {
+                    positivo++;
+                } else {
+                    negativo++;
+                }
+            }
+
+            String manter_criterios = selecionar_criterios;
+             //Esta ver se os numeros positivos sao maiores do que os negativos 
+            if (positivo > negativo) {
+                if (manter) {
+                    manter_criterios = "1";
+                } else {
+                    manter_criterios = "0";
+                }
+            } else if (positivo < negativo) {
+                if (manter) {
+                    manter_criterios = "0";
+                } else {
+                    manter_criterios = "1";
+                }
+            }
+           //lista em que consiste guardar os novos dados 
+            List<String> lista = new ArrayList<>();
+
+            for (String line : novos_dados) {
+                String[] lineArr = line.split("");
+                String val = lineArr[coluna];
+                if (val.equals(manter_criterios)) {
+                    lista.add(line);
+                }
+            }
+            novos_dados = lista;
+            coluna++;
+        }
+
+        return novos_dados.get(0);
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            //Criei uma função em que consiste guardar os dados do ficheiro
+            BufferedReader br = new BufferedReader(new FileReader("C:/Users/PTC_AppDev_Trainee/Downloads/inputs/day3_ficheiro.txt"));
+           
+            
+            //lista de matrizes que serve para novos dados
+            List<String> newData = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) {  
+                newData.add(line);
+            }
+            
+           //Uma funco em que consite obter o valor onde os creditos estão ,ou seja , vai buscar os numeros positivos e numeros negativos
+           //neste caso o gerador do oxigenio ele vai buscar os valores mais significativos  
+            String oxigenio_gerador = getValue(newData, "1", true);
+            String C02 = getValue(newData, "0", false);
+       
+            //mudar  para um numero e mutipilicar por 2 utilizando o raio
+            BigInteger numero_oxigenio = new BigInteger(oxigenio_gerador, 2);
+            BigInteger numero_C02 = new BigInteger(C02, 2);
+            
+            //calculo para obter o resultado final 
+            System.out.println(numero_oxigenio.intValue() * numero_C02.intValue());
+
+        } catch (IOException e) {
+        }
+    }
+}
