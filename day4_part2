@@ -1,0 +1,179 @@
+CODIGO PRINCIPAL
+
+package  bingo.BingoBoard;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Day4_part2 {
+
+
+    public static void main(String[] args) {
+      try {
+            //caminho do ficheiro
+            BufferedReader br = new BufferedReader(new FileReader("C:/Users/PTC_AppDev_Trainee/Downloads/inputs/day4_ficheiro.txt"));
+            
+            //Lista chamada de "quadros" e indentificar a respectiva classe 
+            List<BingoBoard> quadros = new ArrayList<>();
+            
+            //ver se numa linha os numeros são iguais
+            int numero_linha = 0;
+            String numeros = "";
+            BingoBoard quadro_atual = null;
+            String linha;
+       
+           while ((linha = br.readLine()) != null) {
+                if (numero_linha == 0) {
+                    numeros = linha;
+                    numero_linha++;
+                    continue;
+                }
+                //se o quadro atual nao for null vamos adcionar o quadro atual 
+                if (linha.isEmpty()) {
+                    if (quadro_atual != null) {
+                        quadros.add(quadro_atual);
+                    }
+                   
+                    quadro_atual = new BingoBoard();
+                    continue;
+                }
+                //quadro atual adciona a uma linha , numa classe chamada adcionar_linha
+                
+                quadro_atual.adcionar_linha(linha);
+
+                numero_linha++;
+            }
+
+            if (quadro_atual != null) {
+               quadros.add(quadro_atual);
+            }         
+            
+            BingoBoard quadro_vencedor = null;
+            int numero_vencedor = 0;
+            int numero_vencedor_quadros = 0;
+               
+            //fazer um loop. Dividir os numeros com virgulas e ver os numeros da string 
+            
+            for (String numero : numeros.split(",")) {
+                int numero_int = Integer.parseInt(numero);          
+                
+                for (BingoBoard b : quadros) {
+                    if(b.adcionar_numero(numero_int)) {
+                        quadro_vencedor = b;
+                        numero_vencedor = numero_int;
+            
+                    }                    
+                 }
+                
+           }
+          
+            //Mostrar os calculo final
+
+            System.out.println(quadro_vencedor.calcular_quadro_vencedor(numero_vencedor) );
+     
+        } catch (IOException  e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+    }
+    
+
+ 
+}
+
+
+CLASSE
+
+package bingo.BingoBoard;
+
+public class BingoBoard {
+    
+    //Uma matriz com a posicao 25 
+    int[] quadro = new int[25];
+    int linha_atual = 0;
+    boolean vencedor ;
+
+  
+    
+    //e preciso verificar se a linha atual é 0.
+    public void adcionar_linha(String linha) {
+        //System.out.println(linha);
+        
+        // separação usando expressoes regulares
+        String[] lineArr = linha.trim().split("[ ]+");
+        int x = 0;
+        for (String numero : lineArr) {  
+           
+            //buscar a linha atual e adicionar a respetiva 
+            quadro[linha_atual * 5 + x] = Integer.parseInt(numero);
+            x++;
+        }
+    
+        linha_atual++;
+    }
+    
+    //adcionar um novo numero e de seguida ver se a linha é vencedora
+    public boolean adcionar_numero(int numero) {
+        if (vencedor) return false;
+        int pos = 0;
+        //ver se ele encontra algum numero no quadro 
+        for (int q : quadro) {
+            if (q == numero) {
+                //verificar se todos os numeros em uma linha ou coluna são negativos , assim existe possiblidade de ver se a bingo 
+                if (numero > 0) {
+                    quadro[pos] = -numero;
+                } else {
+                    quadro[pos] = Integer.MIN_VALUE;
+                }
+                break;
+            }
+          
+            pos++;
+        }
+
+        if (pos > 24) return false;
+        //verificar em que linha e coluna estão os numeros selecionados 
+        int coluna = pos % 5;
+        int linha_ = Math.floorDiv(pos, 5);
+         
+        int contador = 0;
+        //ver se existe os numeros iguais na coluna ou na linha 
+        for (int i = 0; i < 5; i++) {
+            contador += quadro[linha_ * 5 + i] < 0 ? 0x1 : 0;
+        }
+
+        if (contador == 5) {
+            vencedor = true;
+            return true;
+        }
+
+     contador = 0;
+        for (int i = 0; i < 5; i++) {
+            contador += quadro[i * 5 + coluna] < 0 ? 1 : 0;
+        }
+
+        if (contador == 5) {
+            vencedor = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    
+    //fazer o calculo final
+    public int calcular_quadro_vencedor(int ultimo_numero) {
+        int contador = 0;
+        for (int i = 0; i < 25; i++) {
+            if (quadro[i] > 0) {
+                contador += quadro[i];
+            }
+        }
+
+        return contador  * ultimo_numero  ;
+    }
+    
+    }
