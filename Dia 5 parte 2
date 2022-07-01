@@ -1,0 +1,66 @@
+package day5_part2;
+
+import java.io.File;
+import java.util.Scanner;
+
+
+public class Day5_part2{
+
+
+    public static void main(String[] args) throws Exception{
+     
+        Scanner in = new Scanner(new File("C:/Users/PTC_AppDev_Trainee/Downloads/inputs/day5_ficheiro.txt"));
+        int [][] cordenadas = new int[1000][1000];
+       
+        while (in.hasNextLine()) {
+            String line = in.nextLine();
+           
+            String[] coord = line.split(" ");
+            String[] xy = coord[0].split(",");
+           
+            int x1 = Integer.parseInt(xy[0].trim());
+            int y1 = Integer.parseInt(xy[1].trim());    
+            xy = coord[2].split(",");
+            int x2 = Integer.parseInt(xy[0].trim());
+            int y2 = Integer.parseInt(xy[1].trim());
+           
+           
+
+            //permite fazer um cilo entre os numeros
+            //Zero se o argumento for zero, 1 se o argumento for maior que zero,-1 se o argumento for menor que zero(Math.signum)
+            int dx = (int)Math.signum(x2-x1);
+            int dy = (int)Math.signum(y2-y1);
+            int x = x1;
+            int y = y1;
+           
+            while(x != x2 || y!= y2){
+                cordenadas[x][y]++;
+               
+               x += dx;
+               y += dy;
+           
+               
+            }
+           
+           cordenadas[x][y]++;
+           
+        }
+        //
+        int contador = 0;
+       
+        for (int x = 0; x < cordenadas.length; x++) {
+            for (int y = 0; y < cordenadas.length; y++) {
+                if (cordenadas[x][y] > 1){
+                    contador++;
+                }
+               
+            }
+   
+           
+        }
+       
+
+        System.out.println(contador);
+    }
+   
+}
